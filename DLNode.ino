@@ -3,8 +3,6 @@
  * El arduino deberá ser capaz de enviar y recibir información por comunicación serie half-duplex.
 */
 
-// Comment test
-
 #include <DHT.h>
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 #define DHTPIN 4     // what pin we're connected to
@@ -14,10 +12,13 @@ DHT dht(DHTPIN, DHTTYPE);
 
 const int ReDePin =  2;  // HIGH = Driver / LOW = Receptor
 const int MCUstatus = 3;
+
+//Estos pins se encargarán de darle el ID al nodo
 const int pinID0 = 9;
 const int pinID1 = 10;
 const int pinID2 = 11;
 const int pinID3 = 12;
+
 String inputString = "";         // a String to hold incoming data
 bool stringComplete = false;  // whether the string is complete
 bool transmit = false;
@@ -35,6 +36,7 @@ void checkMcuStatus();
 void setup() 
 { 
   Serial.begin(9600);
+  
   //Output pins
   pinMode(ReDePin, OUTPUT);
   digitalWrite(ReDePin, LOW);
@@ -71,7 +73,7 @@ void serialEvent()
 
 void processData(String inputData)
 {
-  if (!inputString.startsWith(String(nodeID))) return;
+  if (!inputData.startsWith(String(nodeID))) return;
   
   if (inputData.indexOf("all") != -1) { readDHT(); readMQ3();}
   else if (inputData.indexOf("dht") != -1) {readDHT();}
