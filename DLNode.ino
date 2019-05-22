@@ -4,7 +4,7 @@
 */
 
 #include <DHT.h>
-#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
+#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 #define DHTPIN 4     // what pin we're connected to
 
 // Inicializamos el sensor DHT22
