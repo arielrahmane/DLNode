@@ -4,7 +4,7 @@
 */
 
 #include <DHT.h>
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
 #define DHTPIN 4     // what pin we're connected to
 
 // Inicializamos el sensor DHT22
@@ -109,7 +109,7 @@ void readDHT()
     return;
   }
   
-  String data = "TEMPERATURE: " + String(t) + "*C " + " HUMIDITY: " + String(h) + "%";
+  String data = String(t) + "TEMP " + String(h) + "HUMID";
   answer(data);
  
   /* // Calcular el índice de calor en Fahrenheit
@@ -137,7 +137,7 @@ void readMQ3()
   int adc_MQ = analogRead(A0); //Lemos la salida analógica del MQ
   float voltaje = adc_MQ * (5.0 / 1023.0); //Convertimos la lectura en un valor de voltaje
 
-  String data = "ADC: " + String(adc_MQ) + " VOLTAJE: " + String(voltaje);
+  String data = String(adc_MQ) + "ADC " + String(voltaje) + "VOLT";
   answer(data);
 }
 
