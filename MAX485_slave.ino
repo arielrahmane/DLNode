@@ -3,6 +3,8 @@
  * El arduino deberá ser capaz de enviar y recibir información por comunicación serie half-duplex.
 */
 
+// Comment test
+
 #include <DHT.h>
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 #define DHTPIN 4     // what pin we're connected to
