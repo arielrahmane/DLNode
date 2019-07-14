@@ -4,11 +4,26 @@
 */
 
 #include <DHT.h>
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-#define DHTPIN 4     // what pin we're connected to
+#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
+#define DHTPIN_A 4     // what pin we're connected to
+#define DHTPIN_B 5     // what pin we're connected to
+#define DHTPIN_C 6     // what pin we're connected to
 
 // Inicializamos el sensor DHT22
-DHT dht(DHTPIN, DHTTYPE);
+/*DHT dht[] = {
+  {DHTPIN_A, DHTTYPE},
+  {DHTPIN_B, DHTTYPE},
+  {DHTPIN_C, DHTTYPE}
+};*/
+
+DHT dhtA(DHTPIN_A, DHTTYPE);
+DHT dhtB(DHTPIN_B, DHTTYPE);
+DHT dhtC(DHTPIN_C, DHTTYPE);
+
+DHT dht[] = {dhtA, dhtB, dhtC};
+
+float humidity[3];
+float temperature[3];
 
 const int ReDePin =  2;  // HIGH = Driver / LOW = Receptor
 const int MCUstatus = 3;
@@ -49,7 +64,9 @@ void setup()
   pinMode(pinID3, INPUT);
   
   // Comenzamos el sensor DHT
-  dht.begin();
+  dht[0].begin();
+  dht[1].begin();
+  dht[2].begin();
   nodeID = 8*digitalRead(pinID3) + 4*digitalRead(pinID2) + 2*digitalRead(pinID1) + digitalRead(pinID0);
 } 
 void loop() 
@@ -95,41 +112,21 @@ void answer(String resp)
 void readDHT()
 {
   delay(2000);
-  
-  // Leemos la humedad relativa
-  float h = dht.readHumidity();
-  // Leemos la temperatura en grados centígrados (por defecto)
-  float t = dht.readTemperature();
-  // Leemos la temperatura en grados Fahrenheit
-  float f = dht.readTemperature(true);
-
-  // Comprobamos si ha habido algún error en la lectura
-  if (isnan(h) || isnan(t) || isnan(f)) {
-    answer("Error obteniendo los datos del sensor DHT22");
-    return;
+  for (int i = 0; i < 3; i++) {
+    temperature[i] = dht[i].readTemperature();
+    humidity[i] = dht[i].readHumidity();
+    
+    // Comprobamos si ha habido algún error en la lectura
+    if (isnan(temperature[i]) || isnan(humidity[i])) {
+      temperature[i] = -1000;
+      humidity[i] = -1000;
+    }
   }
   
-  String data = String(t) + "TEMP " + String(h) + "HUMID";
-  answer(data);
- 
-  /* // Calcular el índice de calor en Fahrenheit
-  float hif = dht.computeHeatIndex(f, h);
-  // Calcular el índice de calor en grados centígrados
-  float hic = dht.computeHeatIndex(t, h, false); */
- 
-  /*Serial.print("Humedad: ");
-  Serial.print(h);
-  Serial.print(" %\t");
-  Serial.print("Temperatura: ");
-  Serial.print(t);
-  Serial.print(" *C ");
-  Serial.print(f);
-  Serial.print(" *F\t");
-  Serial.print("Índice de calor: ");
-  Serial.print(hic);
-  Serial.print(" *C ");
-  Serial.print(hif);
-  Serial.println(" *F");*/
+  String data_json = "{\"tempA\": " + String(temperature[0]) + ", \"tempB\": " + String(temperature[1]) + ", \"tempC\": " + String(temperature[2]) +  
+                    ", \"humidA\": " + String(humidity[0]) + ", \"humidB\": " + String(humidity[1]) +  ", \"humidC\": " + String(humidity[2]) + "}";
+  
+  answer(data_json);
 }
 
 void readMQ3()
