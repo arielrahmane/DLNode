@@ -4,26 +4,20 @@
 */
 
 #include <DHT.h>
-#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
+#define DHTTYPE DHT22  // DHT 22  (AM2302), AM2321
 #define DHTPIN_A 4     // what pin we're connected to
 #define DHTPIN_B 5     // what pin we're connected to
 #define DHTPIN_C 6     // what pin we're connected to
 
-// Inicializamos el sensor DHT22
-/*DHT dht[] = {
-  {DHTPIN_A, DHTTYPE},
-  {DHTPIN_B, DHTTYPE},
-  {DHTPIN_C, DHTTYPE}
-};*/
-
+// Inicializamos los sensores DHT22
 DHT dhtA(DHTPIN_A, DHTTYPE);
 DHT dhtB(DHTPIN_B, DHTTYPE);
 DHT dhtC(DHTPIN_C, DHTTYPE);
 
 DHT dht[] = {dhtA, dhtB, dhtC};
 
-float humidity[3];
-float temperature[3];
+String humidity[3];
+String temperature[3];
 
 const int ReDePin =  2;  // HIGH = Driver / LOW = Receptor
 const int MCUstatus = 3;
@@ -113,18 +107,18 @@ void readDHT()
 {
   delay(2000);
   for (int i = 0; i < 3; i++) {
-    temperature[i] = dht[i].readTemperature();
-    humidity[i] = dht[i].readHumidity();
+    temperature[i] = String(dht[i].readTemperature());
+    humidity[i] = String(dht[i].readHumidity());
     
     // Comprobamos si ha habido algún error en la lectura
-    if (isnan(temperature[i]) || isnan(humidity[i])) {
-      temperature[i] = -1000;
-      humidity[i] = -1000;
+    if (isnan(temperature[i].toFloat()) || isnan(humidity[i].toFloat())) {
+      temperature[i] = "null";
+      humidity[i] = "null";
     }
   }
   
-  String data_json = "{\"tempA\": " + String(temperature[0]) + ", \"tempB\": " + String(temperature[1]) + ", \"tempC\": " + String(temperature[2]) +  
-                    ", \"humidA\": " + String(humidity[0]) + ", \"humidB\": " + String(humidity[1]) +  ", \"humidC\": " + String(humidity[2]) + "}";
+  String data_json = "{\"tempA\": " + temperature[0] + ", \"tempB\": " + temperature[1] + ", \"tempC\": " + temperature[2] +  
+                    ", \"humidA\": " + humidity[0] + ", \"humidB\": " + humidity[1] +  ", \"humidC\": " + humidity[2] + "}";
   
   answer(data_json);
 }
