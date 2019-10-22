@@ -5,7 +5,7 @@
 
 #include <DHT.h>
 #define DHTTYPE DHT22  // DHT 22  (AM2302), AM2321
-#define DHTPIN_A 4     // what pin we're connected to
+#define DHTPIN_A 2     // what pin we're connected to
 #define DHTPIN_B 5     // what pin we're connected to
 #define DHTPIN_C 6     // what pin we're connected to
 
@@ -19,7 +19,7 @@ DHT dht[] = {dhtA, dhtB, dhtC};
 String humidity[3];
 String temperature[3];
 
-const int ReDePin =  2;  // HIGH = Driver / LOW = Receptor
+const int ReDePin =  7;  // HIGH = Driver / LOW = Receptor
 const int MCUstatus = 3;
 
 //Estos pins se encargarán de darle el ID al nodo
@@ -52,10 +52,10 @@ void setup()
 
   //Input pins
   pinMode(MCUstatus, INPUT);
-  pinMode(pinID0, INPUT);
-  pinMode(pinID1, INPUT);
-  pinMode(pinID2, INPUT);
-  pinMode(pinID3, INPUT);
+  pinMode(pinID0,INPUT_PULLUP);
+  pinMode(pinID1,INPUT_PULLUP);
+  pinMode(pinID2,INPUT_PULLUP);
+  pinMode(pinID3,INPUT_PULLUP);
   
   // Comenzamos el sensor DHT
   dht[0].begin();
