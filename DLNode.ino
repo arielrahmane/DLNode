@@ -56,6 +56,10 @@ void setup()
   pinMode(pinID1,INPUT_PULLUP);
   pinMode(pinID2,INPUT_PULLUP);
   pinMode(pinID3,INPUT_PULLUP);
+
+  //LED pin for status
+  pinMode(A3, OUTPUT);
+  digitalWrite(A3, LOW);
   
   // Comenzamos el sensor DHT
   dht[0].begin();
@@ -90,7 +94,11 @@ void processData(String inputData)
   else if (inputData.indexOf("dht") != -1) {readDHT();}
   else if (inputData.indexOf("mq3") != -1) {readMQ3();}
   else if (inputData.indexOf("MCUstatus") != -1){answer(String(digitalRead(MCUstatus)));}
-  else if (inputData.equals(String(nodeID))){answer("ID" + String(nodeID));}
+  else if (inputData.equals(String(nodeID))){
+    answer("ID" + String(nodeID));
+    digitalWrite(A3, HIGH);
+    }
+  else if(inputData.indexOf("stop") != -1) {digitalWrite(A3, LOW);}
   else {answer(inputData);}
 }
 
