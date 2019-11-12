@@ -133,11 +133,32 @@ void readDHT()
 
 void readMQ3()
 {
-  int adc_MQ = analogRead(A0); //Lemos la salida analógica del MQ
+  // Parte nueva
+  float sensor_volt;
+  float RS_gas; 
+  float R0;
+  float ratio;
+  float BAC;
+  int R2 = 2000;
+
+  int sensorValue = analogRead(A0);
+  sensor_volt=(float)sensorValue/1024*5.0;
+  RS_gas = ((5.0 * R2)/sensor_volt) - R2; 
+ /*-Replace the value of R0 with the value of R0 in your test -*/
+  R0 = 16000;
+  ratio = RS_gas/R0;// ratio = RS/R0
+  double x = 0.4*ratio;   
+  BAC = pow(x,-1.431);  //BAC in mg/L
+
+  String data = String(BAC) + "ALC ";
+  answer(data);
+
+  //Parte vieja
+  /*int adc_MQ = analogRead(A0); //Lemos la salida analógica del MQ
   float voltaje = adc_MQ * (5.0 / 1023.0); //Convertimos la lectura en un valor de voltaje
 
   String data = String(adc_MQ) + "ADC " + String(voltaje) + "VOLT";
-  answer(data);
+  answer(data);*/
 }
 
 void receiveMode()
